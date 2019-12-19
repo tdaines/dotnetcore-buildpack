@@ -32,6 +32,7 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=${DOTNET_CLI_TELEMETRY_OPTOUT:-1}
 DOTNET_SDK_VERSION=${DOTNET_SDK_VERSION:-3.1.100}
 DOTNET_RUNTIME_VERSION=${DOTNET_RUNTIME_VERSION:-3.1.0}
 BUILD_CONFIGURATION=${BUILD_CONFIGURATION:-Release}
+GIT_SHA=${SOURCE_VERSION:0:7}
 
 echo "Installing dotnet"
 install_dotnet $BUILD_DIR $CACHE_DIR $DOTNET_SDK_VERSION $DOTNET_RUNTIME_VERSION
@@ -54,7 +55,7 @@ fi
 export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
 
 echo "publish ${PROJECT_FILE} for ${BUILD_CONFIGURATION}"
-dotnet publish $PROJECT_FILE --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
+dotnet publish $PROJECT_FILE --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64 --version-suffix ${GIT_SHA}
 
 if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile ; then
 	topic "WARNING"
